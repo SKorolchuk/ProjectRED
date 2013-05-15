@@ -48,6 +48,9 @@ add_definitions(
 # Project RED
 add_executable(src
 	src/main.cpp
+	src/main.hpp
+	src/Bootstrap/Initializer.cpp
+	src/Bootstrap/Initializer.hpp
 	src/Common/shader.cpp
 	src/Common/shader.hpp
 	src/Common/controls.cpp
