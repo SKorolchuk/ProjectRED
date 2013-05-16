@@ -2,10 +2,10 @@
 
 int main()
 {
-	Initializer initObject("Project");
+	World world;
 
-	
-	initObject.InitializeDrawData();
+	world.SetWindowAttributes("RED");
+	world.Run();
 
-	return initObject.MainLoop();
+	return 0;
 }

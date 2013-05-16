@@ -1,63 +1,68 @@
-#include "Initializer.hpp"
+#include "World.hpp"
 
-Initializer::Initializer(std::string _title,
-							int _windowMode,
-							int _majorOpenGlVersion,
-							int _minorOpenGlVersion,
-							int _FSAA,
-							int _width,
-							int _height,
-							int _redInitBits,
-							int _greenInitBits,
-							int _blueInitBits,
-							int _alphaInitBits,
-							int _depthInitBits,
-							int _stencilInitBits):
-		OPENGL_MAJOR_VERSION(_majorOpenGlVersion),
-		FSAA(_FSAA),
-		OPENGL_MINOR_VERSION(_minorOpenGlVersion),
-		width(_width),
-		height(height),
-		redInitBits(_redInitBits),
-		greenInitBits(_greenInitBits),
-		blueInitBits(_blueInitBits),
-		alphaInitBits(_alphaInitBits),
-		depthInitBits(_depthInitBits),
-		stencilInitBits(_stencilInitBits),
-		windowMode(_windowMode),
-		title(_title)
-		{
-			this->InitializeWindow();
+World::World() {
+	this->internalTime = new GameTime();
+	this->isTerminated = false;
 }
 
-Initializer::~Initializer() {
+World::World(const World& copyObj) {
+}
+
+void World::Release() {
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
+}
 
+void World::UnloadContent() {
 	// Cleanup VBO
 	glDeleteBuffers(1, &(this->vertexbuffer));
-	glDeleteVertexArrays(1, &(this->VertexArrayID));
+	glDeleteVertexArrays(1, &(this->vertexArrayID));
 }
 
-void Initializer::BoostTest()
-	const {
-	std::string greetings("Hello World!");
-
-	BOOST_FOREACH( char character, greetings)
-	{
-		std::cout << character << std::endl;
-	}
+World::~World() {
+	this->Release();
+	this->UnloadContent();
 }
 
-void Initializer::InitializeWindow() const {
+void World::SetWindowAttributes(
+	std::string _title,
+	int _windowMode,
+	int _majorOpenGlVersion,
+	int _minorOpenGlVersion,
+	int _fsaa,
+	int _width,
+	int _height,
+	int _redInitBits,
+	int _greenInitBits,
+	int _blueInitBits,
+	int _alphaInitBits,
+	int _depthInitBits,
+	int _stencilInitBits
+	) {
+		this->majorOpenGlVersion = _majorOpenGlVersion;
+		this->fsaa = _fsaa;
+		this->minorOpenGlVersion = _minorOpenGlVersion;
+		this->width = _width;
+		this->height = height;
+		this->redInitBits = _redInitBits;
+		this->greenInitBits = _greenInitBits;
+		this->blueInitBits = _blueInitBits;
+		this->alphaInitBits = _alphaInitBits;
+		this->depthInitBits = _depthInitBits;
+		this->stencilInitBits = _stencilInitBits;
+		this->windowMode = _windowMode;
+		this->title = _title;
+}
+
+void World::Initialize() {
 	if( !glfwInit() )
 	{
 		throw std::exception("Failed to initialize GLFW\n");
 	}
 
-	glfwOpenWindowHint(GLFW_FSAA_SAMPLES, this->FSAA);
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, this->OPENGL_MAJOR_VERSION);
-	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, this->OPENGL_MINOR_VERSION);
+	glfwOpenWindowHint(GLFW_FSAA_SAMPLES, this->fsaa);
+	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, this->majorOpenGlVersion);
+	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, this->minorOpenGlVersion);
 	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
@@ -78,7 +83,6 @@ void Initializer::InitializeWindow() const {
 	// Initialize GLEW
 	glewExperimental = true; // Needed for core profile
 	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
 		throw std::exception("Failed to initialize GLEW\n");
 	}
 
@@ -87,14 +91,18 @@ void Initializer::InitializeWindow() const {
 	// Ensure we can capture the escape key being pressed below
 	glfwEnable( GLFW_STICKY_KEYS );
 
-	// Dark blue background
-	glClearColor(0.1f, 0.2f, 0.4f, 0.4f);
-
+	// Dark background
+	glClearColor(
+			(float)this->redInitBits / 255,
+			(float)this->greenInitBits / 255,
+			(float)this->blueInitBits / 255,
+			(float)this->alphaInitBits / 255
+		);
 }
 
-void Initializer::InitializeDrawData() {
-	glGenVertexArrays(1, &(this->VertexArrayID));
-	glBindVertexArray(this->VertexArrayID);
+void World::LoadContent() {
+	glGenVertexArrays(1, &(this->vertexArrayID));
+	glBindVertexArray(this->vertexArrayID);
 
 	// Create and compile our GLSL program from the shaders
 	this->programID  = LoadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
@@ -110,10 +118,11 @@ void Initializer::InitializeDrawData() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_DYNAMIC_DRAW);
 }
 
-int Initializer::MainLoop() const {
-	do{
+void World::Update(GameTime *time) {
+}
 
-		// Clear the screen
+void World::Draw(GameTime *time) {
+	// Clear the screen
 		glClear( GL_COLOR_BUFFER_BIT );
 
 		// Use our shader
@@ -138,10 +147,30 @@ int Initializer::MainLoop() const {
 
 		// Swap buffers
 		glfwSwapBuffers();
+}
 
+void World::Exit() {
+	this->isTerminated = true;
+}
+
+void World::ResetTime() {
+	this->internalTime->Start();
+}
+
+void World::Tick() {
+	this->Update(this->internalTime);
+	this->Draw(this->internalTime);
+}
+
+void World::Run() {
+	this->Initialize();
+	this->LoadContent();
+	this->ResetTime();
+	do {
+		this->Tick();
 	} // Check if the ESC key was pressed or the window was closed
 	while( glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
-		   glfwGetWindowParam( GLFW_OPENED ) );
-
-	return 0;
+			glfwGetWindowParam( GLFW_OPENED ) && !this->isTerminated );
+	this->UnloadContent();
+	this->Release();
 }

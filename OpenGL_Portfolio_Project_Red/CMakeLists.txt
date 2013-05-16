@@ -49,8 +49,6 @@ add_definitions(
 add_executable(src
 	src/main.cpp
 	src/main.hpp
-	src/Bootstrap/Initializer.cpp
-	src/Bootstrap/Initializer.hpp
 	src/Common/shader.cpp
 	src/Common/shader.hpp
 	src/Common/controls.cpp
@@ -67,6 +65,28 @@ add_executable(src
 	src/Common/tangentspace.hpp
 	src/Common/text2D.cpp
 	src/Common/text2D.hpp
+	src/Bootstrap/Bootstrapper.cpp
+	src/Bootstrap/Bootstrapper.hpp
+	src/Bootstrap/IInitializable.hpp
+	src/Bootstrap/World.cpp
+	src/Bootstrap/World.hpp
+	src/Graphics/GraphicsManager.cpp
+	src/Graphics/GraphicsManager.hpp
+	src/Graphics/IGraphics.hpp
+	src/Logic/Game.cpp
+	src/Logic/Game.hpp
+	src/Logic/IGame.hpp
+	src/Logic/GameTime.cpp
+	src/Logic/GameTime.hpp
+	src/Sound/ISoundManager.hpp
+	src/Sound/ITrack.hpp
+	src/Sound/SoundManager.cpp
+	src/Sound/SoundManager.hpp
+	src/Sound/Track.cpp
+	src/Sound/Track.hpp
+	src/Input/IDeviceManager.hpp
+	src/Input/InputManager.cpp
+	src/Input/InputManager.hpp
 )
 target_link_libraries(src
 	${ALL_LIBS}
@@ -78,6 +98,11 @@ create_target_launcher(src WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
 
 SOURCE_GROUP(Common REGULAR_EXPRESSION ".*/src/Common/.*" )
+SOURCE_GROUP(Bootstrap REGULAR_EXPRESSION ".*/src/Bootstrap/.*" )
+SOURCE_GROUP(Graphics REGULAR_EXPRESSION ".*/src/Graphics/.*" )
+SOURCE_GROUP(Logic REGULAR_EXPRESSION ".*/src/Logic/.*" )
+SOURCE_GROUP(Sound REGULAR_EXPRESSION ".*/src/Sound/.*" )
+SOURCE_GROUP(Input REGULAR_EXPRESSION ".*/src/Input/.*" )
 
 
 if (NOT ${CMAKE_GENERATOR} MATCHES "Xcode" )
