@@ -21,7 +21,7 @@ class World : IInitializable {
 public:
 	World();
 	World(const World& copyObj);
-	~World();
+	virtual ~World();
 	virtual void Exit();
 	virtual void ResetTime();
 	virtual void Run();
@@ -63,8 +63,5 @@ private:
 	int windowMode;
 	bool isTerminated;
 	GameTime* internalTime;
-	GLuint vertexArrayID;
-	GLuint programID;
-	GLuint vertexbuffer;
 	std::string title;
 };

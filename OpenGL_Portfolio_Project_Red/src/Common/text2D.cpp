@@ -18,7 +18,10 @@ unsigned int Text2DUVBufferID;
 unsigned int Text2DShaderID;
 unsigned int Text2DUniformID;
 
-void initText2D(const char * texturePath){
+void initText2D(const char * texturePath, 
+				const char * path_to_shaders_dir, 
+				const char * text_vertex_shader, 
+				const char * text_fragment_shader){
 
 	// Initialize texture
 	Text2DTextureID = loadTGA_glfw(texturePath);
@@ -28,7 +31,7 @@ void initText2D(const char * texturePath){
 	glGenBuffers(1, &Text2DUVBufferID);
 
 	// Initialize Shader
-	Text2DShaderID = LoadShaders( "TextVertexShader.vertexshader", "TextVertexShader.fragmentshader" );
+	Text2DShaderID = LoadShaders(path_to_shaders_dir, text_vertex_shader, text_fragment_shader );
 
 	// Initialize uniforms' IDs
 	Text2DUniformID = glGetUniformLocation( Text2DShaderID, "myTextureSampler" );
