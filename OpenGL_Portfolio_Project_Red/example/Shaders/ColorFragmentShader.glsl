@@ -10,6 +10,6 @@ void main(){
 
 	// Output color = color specified in the vertex shader, 
 	// interpolated between all 3 surrounding vertices
-	color = fragmentColor;
+	color = vec3(0.2,0.3,0.4);
 
 }

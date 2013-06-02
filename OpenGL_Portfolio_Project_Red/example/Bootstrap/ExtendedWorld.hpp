@@ -15,4 +15,10 @@ private:
 	GLuint vertexArrayID;
 	GLuint programID;
 	GLuint vertexbuffer;
+	GLuint colorbuffer;
+	GLuint MatrixId;
+	glm::mat4 Projection;
+	glm::mat4 View;
+	glm::mat4 Model;
+	glm::mat4 MVP;
 };

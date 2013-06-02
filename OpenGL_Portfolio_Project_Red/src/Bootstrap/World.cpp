@@ -98,6 +98,8 @@ void World::Initialize() {
 			(float)this->blueInitBits / 255,
 			(float)this->alphaInitBits / 255
 		);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 }
 
 void World::Update(GameTime *time) {
